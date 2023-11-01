@@ -16,4 +16,4 @@ app.add_middleware(
 
 @app.post("/api/send",tags=["mail"])
 def send_email(bgtasks: BackgroundTasks, details: EmailSchema, ):
-    ops_send_email(bgtasks, details)
+    return ops_send_email(bgtasks, details)
