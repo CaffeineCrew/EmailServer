@@ -34,8 +34,8 @@ async def ops_send_email(details: EmailSchema):
             subtype=MessageType.html
         )
 
-        # bgtasks.add_task(app.state.mail_client.send_message, message=message, template_name=details.template_name)
-        await app.state.mail_client.send_message(message=message, template_name=details.template_name)
+        bgtasks.add_task(app.state.mail_client.send_message, message=message, template_name=details.template_name)
+        # await app.state.mail_client.send_message(message=message, template_name=details.template_name)
     
     else:
         message = MessageSchema(
@@ -45,8 +45,8 @@ async def ops_send_email(details: EmailSchema):
             subtype=MessageType.html
         )
 
-        # bgtasks.add_task(app.state.mail_client.send_message, message=message)
-        await app.state.mail_client.send_message(message=message)
+        bgtasks.add_task(app.state.mail_client.send_message, message=message)
+        # await app.state.mail_client.send_message(message=message)
         
 
         
