@@ -3,6 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from server import app
 
+import resend
+
 from .models import *
 from .services import *
 
