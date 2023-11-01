@@ -3,8 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from server import app
 
-import resend
-
 from .models import *
 from .services import *
 
@@ -18,12 +16,6 @@ app.add_middleware(
 
 @app.post("/api/send",tags=["mail"])
 def send_email(bgtasks: BackgroundTasks, details: EmailSchema):
-    # await ops_send_email(bgtasks, details)
-    r = resend.Emails.send({
-  "from": "onboarding@resend.dev",
-  "to": "caffienecrewhacks@gmail.com",
-  "subject": "Hello World",
-  "html": "<p>Congrats on sending your <strong>first email</strong>!</p>"
-})
-
+    ops_send_email(bgtasks, details)
+    
 

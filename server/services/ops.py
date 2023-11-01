@@ -4,11 +4,12 @@ from fastapi_mail import MessageSchema, MessageType
 
 from server import app
 
+import resend
 import glob
 from server.models import *
 from server.core.ConfigEnv import config
 
-async def ops_send_email(bgtasks: BackgroundTasks, details: EmailSchema):
+def ops_send_email(bgtasks: BackgroundTasks, details: EmailSchema):
     if details.body is None and details.template_name is None:
         raise HTTPException(status_code=400, detail="Either body or template_name must be specified")
     
@@ -27,14 +28,25 @@ async def ops_send_email(bgtasks: BackgroundTasks, details: EmailSchema):
         if "server/templates/"+details.template_name not in template_names:
             raise HTTPException(status_code=400, detail="Template name not found")
         
-        message = MessageSchema(
-            subject=details.subject,
-            recipients=details.recipients,  # List of recipients, as many as you can pass
-            template_body=details.template_kwargs,
-            subtype=MessageType.html
-        )
+        with open (f"server/templates/{details.template_name}", "r") as f:
+            template = f.read().format(**details.template_kwargs)
 
-        bgtasks.add_task(app.state.mail_client.send_message, message=message, template_name=details.template_name)
+        message = resend.Emails.send({
+            "from": "onboarding@resend.dev",
+            "to": f"{details.recipients[0]}",
+            "subject": f"{details.subject}",
+            "html": f"{template}"
+        })
+
+
+        # message = MessageSchema(
+        #     subject=details.subject,
+        #     recipients=details.recipients,  # List of recipients, as many as you can pass
+        #     template_body=details.template_kwargs,
+        #     subtype=MessageType.html
+        # )
+
+        # bgtasks.add_task(app.state.mail_client.send_message, message=message, template_name=details.template_name)
         # await app.state.mail_client.send_message(message=message, template_name=details.template_name)
     
     else:
@@ -47,6 +59,7 @@ async def ops_send_email(bgtasks: BackgroundTasks, details: EmailSchema):
 
         bgtasks.add_task(app.state.mail_client.send_message, message=message)
         # await app.state.mail_client.send_message(message=message)
+        
         
 
         
