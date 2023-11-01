@@ -15,9 +15,9 @@ app.add_middleware(
 )
 
 @app.post("/api/send",tags=["mail"])
-async def send_email(bgtasks: BackgroundTasks, details: EmailSchema):
+def send_email(bgtasks: BackgroundTasks, details: EmailSchema):
     # await ops_send_email(bgtasks, details)
-    await r = resend.Emails.send({
+    r = resend.Emails.send({
   "from": "onboarding@resend.dev",
   "to": details.recipients[0],
   "subject": "Techdocs",
