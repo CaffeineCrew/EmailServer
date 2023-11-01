@@ -8,7 +8,7 @@ import glob
 from server.models import *
 from server.core.ConfigEnv import config
 
-def ops_send_email(bgtasks: BackgroundTasks, details: EmailSchema):
+async def ops_send_email(bgtasks: BackgroundTasks, details: EmailSchema):
     if details.body is None and details.template_name is None:
         raise HTTPException(status_code=400, detail="Either body or template_name must be specified")
     
@@ -34,7 +34,8 @@ def ops_send_email(bgtasks: BackgroundTasks, details: EmailSchema):
             subtype=MessageType.html
         )
 
-        bgtasks.add_task(app.state.mail_client.send_message, message=message, template_name=details.template_name)
+        # bgtasks.add_task(app.state.mail_client.send_message, message=message, template_name=details.template_name)
+        await app.state.mail_client.send_message(message=message, template_name=details.template_name)
     
     else:
         message = MessageSchema(
@@ -44,7 +45,8 @@ def ops_send_email(bgtasks: BackgroundTasks, details: EmailSchema):
             subtype=MessageType.html
         )
 
-        bgtasks.add_task(app.state.mail_client.send_message, message=message)
+        # bgtasks.add_task(app.state.mail_client.send_message, message=message)
+        await app.state.mail_client.send_message(message=message)
         
 
         
