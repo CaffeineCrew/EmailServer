@@ -8,7 +8,7 @@ from .services import *
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://caffeinecrew-techdocs.hf.space", "http://localhost:8000"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
