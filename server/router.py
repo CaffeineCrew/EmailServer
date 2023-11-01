@@ -21,8 +21,9 @@ def send_email(bgtasks: BackgroundTasks, details: EmailSchema):
     # await ops_send_email(bgtasks, details)
     r = resend.Emails.send({
   "from": "onboarding@resend.dev",
-  "to": details.recipients[0],
-  "subject": "Techdocs",
-  "HTML": "</a><p>Congrats on sending your <strong>first email</strong>!</p>"
+  "to": "caffienecrewhacks@gmail.com",
+  "subject": "Hello World",
+  "html": "<p>Congrats on sending your <strong>first email</strong>!</p>"
 })
+
 
