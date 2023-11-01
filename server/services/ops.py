@@ -8,7 +8,7 @@ import glob
 from server.models import *
 from server.core.ConfigEnv import config
 
-async def ops_send_email(details: EmailSchema):
+async def ops_send_email(bgtasks: BackgroundTasks, details: EmailSchema):
     if details.body is None and details.template_name is None:
         raise HTTPException(status_code=400, detail="Either body or template_name must be specified")
     
