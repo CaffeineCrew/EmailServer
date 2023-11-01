@@ -15,5 +15,5 @@ app.add_middleware(
 )
 
 @app.post("/api/send",tags=["mail"])
-async def send_email(bgtasks: BackgroundTasks, details: EmailSchema):
-    await ops_send_email(bgtasks, details)
+async def send_email(details: EmailSchema):
+    await ops_send_email(details)
