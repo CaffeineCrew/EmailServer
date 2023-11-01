@@ -24,9 +24,8 @@ def ops_send_email(bgtasks: BackgroundTasks, details: EmailSchema):
     
     if details.template_name is not None:
         template_names = glob.glob("server/templates/*.html")
-        if "server/templates\\"+details.template_name not in template_names:
-            # raise HTTPException(status_code=400, detail="Template name not found")
-            return template_names
+        if "server/templates/"+details.template_name not in template_names:
+            raise HTTPException(status_code=400, detail="Template name not found")
         
         message = MessageSchema(
             subject=details.subject,
