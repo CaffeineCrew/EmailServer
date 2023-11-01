@@ -4,6 +4,7 @@ from fastapi.exceptions import HTTPException
 from server.core.ConfigEnv import config
 
 from fastapi_mail import ConnectionConfig, FastMail
+import resend
 
 app = FastAPI(title="Techdocs",
               version="V0.0.1",
@@ -30,6 +31,9 @@ try:
     )
 
     app.state.mail_client = FastMail(conf)
+
+    resend.api_key = "re_eJBe5r89_31AU33Tjrrb7RYgh5n7z15q5"
+
 except Exception as e:
     print(e)
     raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error while initializing mail client")
