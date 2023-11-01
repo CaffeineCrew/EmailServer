@@ -8,12 +8,12 @@ from .services import *
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://caffeinecrew-techdocs.hf.space"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 @app.post("/api/send",tags=["mail"])
-def send_email(bgtasks: BackgroundTasks, details: EmailSchema, ):
-    ops_send_email(bgtasks, details)
+async def send_email(bgtasks: BackgroundTasks, details: EmailSchema):
+    await ops_send_email(bgtasks, details)
