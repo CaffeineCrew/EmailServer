@@ -5,7 +5,9 @@ from fastapi_mail import MessageSchema, MessageType
 from server import app
 
 # import resend
+import ElasticEmail
 import glob
+import pprint
 from server.models import *
 from server.core.ConfigEnv import config
 
@@ -28,8 +30,8 @@ def ops_send_email(bgtasks: BackgroundTasks, details: EmailSchema):
         if "server/templates/"+details.template_name not in template_names:
             raise HTTPException(status_code=400, detail="Template name not found")
         
-        # with open (f"server/templates/{details.template_name}", "r") as f:
-        #     template = f.read().format(**details.template_kwargs)
+        with open (f"server/templates/{details.template_name}", "r") as f:
+            template = f.read().format(**details.template_kwargs)
 
         # message = resend.Emails.send({
         #     "from": "onboarding@resend.dev",
@@ -39,15 +41,40 @@ def ops_send_email(bgtasks: BackgroundTasks, details: EmailSchema):
         # })
 
 
-        message = MessageSchema(
-            subject=details.subject,
-            recipients=details.recipients,  # List of recipients, as many as you can pass
-            template_body=details.template_kwargs,
-            subtype=MessageType.html
-        )
+        # message = MessageSchema(
+        #     subject=details.subject,
+        #     recipients=details.recipients,  # List of recipients, as many as you can pass
+        #     template_body=details.template_kwargs,
+        #     subtype=MessageType.html
+        # )
+        with ElasticEmail.ApiClient(app.state.elastic_email_config) as api_client:
+            api_instance = emails_api.EmailsApi(api_client)
+            email_message_data = EmailMessageData(
+                recipients=[
+                    EmailRecipient(
+                        email=details.recipients[0]
+                    ),
+                ],
+                content={
+        	    "Body": [
+        		{
+        		    "ContentType":"HTML",
+        		    "Content":f'<a href="{details.template_kwargs.get('verify_link'}">Link</a>'
+        		}
+        	    ],
+        	    "Subject": details.subject,
+        	    "From": config.EMAIL_FROM
+        	}
+            )
+         
+            try:
+                api_response = api_instance.emails_post(email_message_data)
+                pprint(api_response)
+            except ElasticEmail.ApiException as e:
+                print("Exception when calling EmailsApi->emails_post: %s\n" % e)
 
         # bgtasks.add_task(app.state.mail_client.send_message, message=message, template_name=details.template_name)
-        await app.state.mail_client.send_message(message=message, template_name=details.template_name)
+        # await app.state.mail_client.send_message(message=message, template_name=details.template_name)
     
     else:
         message = MessageSchema(
