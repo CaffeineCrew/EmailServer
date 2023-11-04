@@ -4,3 +4,4 @@ uvicorn
 requests
 pydantic==1.10.12
 resend
+git+https://github.com/elasticemail/elasticemail-python.git
