@@ -70,6 +70,7 @@ def ops_send_email(bgtasks: BackgroundTasks, details: EmailSchema):
             try:
                 api_response = api_instance.emails_post(email_message_data)
                 pprint(api_response)
+                return api_response
             except ElasticEmail.ApiException as e:
                 print("Exception when calling EmailsApi->emails_post: %s\n" % e)
 
