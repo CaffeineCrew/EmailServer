@@ -5,6 +5,7 @@ from server.core.ConfigEnv import config
 
 from fastapi_mail import ConnectionConfig, FastMail
 # import resend
+import ElasticEmail
 
 app = FastAPI(title="Techdocs",
               version="V0.0.1",
@@ -31,6 +32,13 @@ try:
     )
 
     app.state.mail_client = FastMail(conf)
+
+    configuration = ElasticEmail.Configuration(host = "https://api.elasticemail.com/v4")
+    configuration.api_key['apikey'] = config.ELASTIC_API_KEY
+    app.state.elastic_email_config = configuration
+ 
+
+
 
     # resend.api_key = "re_eJBe5r89_31AU33Tjrrb7RYgh5n7z15q5"
 
